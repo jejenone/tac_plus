@@ -96,3 +96,11 @@ users_guide: Makefile $(srcdir)/users_guide.in
 	rm -f users_guide users_guide.tmp; \
 	$(auto_edit) $(srcdir)/users_guide.in >users_guide.tmp; \
 	mv users_guide.tmp users_guide
+
+if TACYUBIKEY
+YUBIKEY_LIBS = -lyubikey
+else
+YUBIKEY_LIBS =
+endif
+
+tac_plus_LDADD = $(WRAPLIBS) $(LIBS) $(YUBIKEY_LIBS)

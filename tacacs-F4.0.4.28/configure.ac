@@ -374,6 +374,48 @@ AC_SUBST(ACECLNT)
 AM_CONDITIONAL([TACACECLNT], [test "${with_aceclnt}" != "no"])
 
 dnl
+dnl YubiKey OTP support
+dnl
+AC_MSG_CHECKING([whether to include YubiKey OTP support])
+AH_TEMPLATE(YUBIKEY_OTP, [define this to include support for YubiKey OTP])
+AC_ARG_WITH(yubikey,
+    AS_HELP_STRING([--with-yubikey[[=PATH]]],[YubiKey OTP support. PATH is dir above lib, eg: /usr/local]),
+[ case "$withval" in
+  no)
+    AC_MSG_RESULT(no)
+    ;;
+  yes)
+    AC_MSG_RESULT(yes)
+    AC_DEFINE(YUBIKEY_OTP)
+    AC_SEARCH_LIBS([yubikey_parse], [yubikey],
+    [ ],
+    [AC_MSG_ERROR(Could not find libyubikey. You must first install libyubikey or provide a hint to the location of library and includes, as in --with-yubikey=/usr/local)])
+    ;;
+  *)
+    AC_MSG_RESULT(yes)
+    AC_DEFINE(YUBIKEY_OTP)
+    if test -d "$withval" ; then
+    LDFLAGS="$LDFLAGS -L$withval/lib"
+    CFLAGS="$CFLAGS -I$withval/include"
+    AC_SEARCH_LIBS([yubikey_parse], [yubikey],
+        [ ],
+        [AC_MSG_ERROR([Could not find libyubikey.])
+    ])
+    else
+    AC_SEARCH_LIBS([yubikey_parse], [$withval],
+        [ ],
+        [AC_MSG_ERROR([Could not find lib$withval.])
+    ])
+    fi
+    ;;
+  esac ],
+  AC_MSG_RESULT(no)
+  with_yubikey="no"
+)
+AC_SUBST(YUBIKEY_OTP)
+AM_CONDITIONAL([TACYUBIKEY], [test "${with_yubikey}" != "no"])
+
+dnl
 dnl		XXX: might be good to have these as config file options
 dnl		     or just options for running scripts
 dnl userid - aka TACPLUS_USERID
@@ -1011,5 +1053,7 @@ AH_BOTTOM([
 ])
 AC_CONFIG_HEADERS(config.h)
 AC_CONFIG_FILES(Makefile version.h pathsl.h tac_plus.8 tac_plus.conf.5)
+
+AC_SUBST(YUBIKEY_OTP)
 
 AC_OUTPUT()
