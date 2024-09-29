@@ -678,6 +678,9 @@ UENABLE
 ACLS
 TACPLUS_GROUPID
 TACPLUS_USERID
+TACYUBIKEY_FALSE
+TACYUBIKEY_TRUE
+YUBIKEY_OTP
 TACACECLNT_FALSE
 TACACECLNT_TRUE
 ACECLNT
@@ -838,6 +841,7 @@ enable_warn
 with_libwrap
 with_skey
 with_aceclnt
+with_yubikey
 with_userid
 with_groupid
 enable_acls
@@ -1533,6 +1537,8 @@ Optional Packages:
                           /usr/local
   --with-aceclnt=PATH   libaceclnt (RSA SecurID) support. PATH is dir above
                           lib, eg: /usr/local
+  --with-yubikey=PATH   YubiKey OTP support. PATH is dir above lib, eg:
+                          /usr/local
   --with-userid=UID       tacacs will setuid(UID) after it binds the tcp port
   --with-groupid=UID      tacacs will setgid(GID) after it binds the tcp port
   --with-pidfile=PATH     alternate pidfile FQPN
@@ -16098,6 +16104,188 @@ else
 fi
 
 
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether to include YubiKey OTP support" >&5
+printf %s "checking whether to include YubiKey OTP support... " >&6; }
+
+
+# Check whether --with-yubikey was given.
+if test ${with_yubikey+y}
+then :
+  withval=$with_yubikey;  case "$withval" in
+  no)
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+    ;;
+  yes)
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+printf "%s\n" "yes" >&6; }
+    printf "%s\n" "#define YUBIKEY_OTP 1" >>confdefs.h
+
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for library containing yubikey_parse" >&5
+printf %s "checking for library containing yubikey_parse... " >&6; }
+if test ${ac_cv_search_yubikey_parse+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  ac_func_search_save_LIBS=$LIBS
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+char yubikey_parse ();
+int
+main (void)
+{
+return yubikey_parse ();
+  ;
+  return 0;
+}
+_ACEOF
+for ac_lib in '' yubikey
+do
+  if test -z "$ac_lib"; then
+    ac_res="none required"
+  else
+    ac_res=-l$ac_lib
+    LIBS="-l$ac_lib  $ac_func_search_save_LIBS"
+  fi
+  if ac_fn_c_try_link "$LINENO"
+then :
+  ac_cv_search_yubikey_parse=$ac_res
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam \
+    conftest$ac_exeext
+  if test ${ac_cv_search_yubikey_parse+y}
+then :
+  break
+fi
+done
+if test ${ac_cv_search_yubikey_parse+y}
+then :
+
+else $as_nop
+  ac_cv_search_yubikey_parse=no
+fi
+rm conftest.$ac_ext
+LIBS=$ac_func_search_save_LIBS
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_search_yubikey_parse" >&5
+printf "%s\n" "$ac_cv_search_yubikey_parse" >&6; }
+ac_res=$ac_cv_search_yubikey_parse
+if test "$ac_res" != no
+then :
+  test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
+
+      { printf "%s\n" "$as_me:${as_lineno-$LINENO}: Found libyubikey" >&5
+printf "%s\n" "$as_me: Found libyubikey" >&6;}
+
+else $as_nop
+
+      as_fn_error $? "Could not find libyubikey. You must first install libyubikey or provide a hint to the location of library and includes, as in --with-yubikey=/usr/local" "$LINENO" 5
+
+fi
+
+    ;;
+  *)
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+printf "%s\n" "yes" >&6; }
+    printf "%s\n" "#define YUBIKEY_OTP 1" >>confdefs.h
+
+    if test -d "$withval" ; then
+      { printf "%s\n" "$as_me:${as_lineno-$LINENO}: Using custom YubiKey path: $withval" >&5
+printf "%s\n" "$as_me: Using custom YubiKey path: $withval" >&6;}
+      LDFLAGS="$LDFLAGS -L$withval/lib"
+      CFLAGS="$CFLAGS -I$withval/include"
+      { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for library containing yubikey_parse" >&5
+printf %s "checking for library containing yubikey_parse... " >&6; }
+if test ${ac_cv_search_yubikey_parse+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  ac_func_search_save_LIBS=$LIBS
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+char yubikey_parse ();
+int
+main (void)
+{
+return yubikey_parse ();
+  ;
+  return 0;
+}
+_ACEOF
+for ac_lib in '' yubikey
+do
+  if test -z "$ac_lib"; then
+    ac_res="none required"
+  else
+    ac_res=-l$ac_lib
+    LIBS="-l$ac_lib  $ac_func_search_save_LIBS"
+  fi
+  if ac_fn_c_try_link "$LINENO"
+then :
+  ac_cv_search_yubikey_parse=$ac_res
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam \
+    conftest$ac_exeext
+  if test ${ac_cv_search_yubikey_parse+y}
+then :
+  break
+fi
+done
+if test ${ac_cv_search_yubikey_parse+y}
+then :
+
+else $as_nop
+  ac_cv_search_yubikey_parse=no
+fi
+rm conftest.$ac_ext
+LIBS=$ac_func_search_save_LIBS
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_search_yubikey_parse" >&5
+printf "%s\n" "$ac_cv_search_yubikey_parse" >&6; }
+ac_res=$ac_cv_search_yubikey_parse
+if test "$ac_res" != no
+then :
+  test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
+
+          { printf "%s\n" "$as_me:${as_lineno-$LINENO}: Found libyubikey in custom path" >&5
+printf "%s\n" "$as_me: Found libyubikey in custom path" >&6;}
+
+else $as_nop
+
+          as_fn_error $? "Could not find libyubikey in $withval. Please check the path and ensure libyubikey is installed." "$LINENO" 5
+
+fi
+
+    else
+      as_fn_error $? "Invalid path specified for --with-yubikey. It should be a directory." "$LINENO" 5
+    fi
+    ;;
+  esac
+else $as_nop
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+  with_yubikey="no"
+
+fi
+
+
+ if test "${with_yubikey}" != "no"; then
+  TACYUBIKEY_TRUE=
+  TACYUBIKEY_FALSE='#'
+else
+  TACYUBIKEY_TRUE='#'
+  TACYUBIKEY_FALSE=
+fi
+
+
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether to setuid()" >&5
 printf %s "checking whether to setuid()... " >&6; }
 
@@ -17295,6 +17483,8 @@ ac_config_headers="$ac_config_headers config.h"
 ac_config_files="$ac_config_files Makefile version.h pathsl.h tac_plus.8 tac_plus.conf.5"
 
 
+
+
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -17447,6 +17637,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${TACACECLNT_TRUE}" && test -z "${TACACECLNT_FALSE}"; then
   as_fn_error $? "conditional \"TACACECLNT\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${TACYUBIKEY_TRUE}" && test -z "${TACYUBIKEY_FALSE}"; then
+  as_fn_error $? "conditional \"TACYUBIKEY\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 

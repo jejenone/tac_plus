@@ -207,6 +207,9 @@ typedef struct user {
 #ifdef MAXSESS
     int maxsess;		/* Max sessions/user */
 #endif /* MAXSESS */
+#ifdef YUBIKEY_OTP
+    char *yubikey_otp;		/* our yubikey otp secret */
+#endif /* YUBIKEY_OTP */
 } USER;
 typedef USER GROUP;
 

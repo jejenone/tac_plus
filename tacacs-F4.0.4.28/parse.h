@@ -20,6 +20,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE.
  */
 
+
 /* Keywords & values */
 
 #define S_eof		99
@@ -98,3 +99,6 @@
 #define S_writetimeout 55
 #define S_accepttimeout 56
 #define S_logauthor 57
+#ifdef YUBIKEY_OTP
+#define S_yubikey 58
+#endif

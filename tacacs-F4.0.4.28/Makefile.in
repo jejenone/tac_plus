@@ -181,7 +181,8 @@ am_tac_plus_OBJECTS = acct.$(OBJEXT) authen.$(OBJEXT) author.$(OBJEXT) \
 	$(am__objects_2)
 tac_plus_OBJECTS = $(am_tac_plus_OBJECTS)
 am__DEPENDENCIES_1 =
-tac_plus_DEPENDENCIES = $(am__DEPENDENCIES_1) libtacacs.la
+tac_plus_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	libtacacs.la
 tac_plus_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(tac_plus_LDFLAGS) $(LDFLAGS) -o $@
@@ -408,6 +409,7 @@ WRAPINCS = @WRAPINCS@
 WRAPLIBS = @WRAPLIBS@
 YACC = @YACC@
 YFLAGS = @YFLAGS@
+YUBIKEY_OTP = @YUBIKEY_OTP@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
@@ -473,8 +475,10 @@ tac_plus_SOURCES = acct.c authen.c author.c choose_authen.c \
 	maxsessint.c parse.c programs.c pw.c pwlib.c report.c \
 	sendauth.c sendpass.c tac_plus.c utils.c $(am__append_1) \
 	$(am__append_2)
+@TACYUBIKEY_FALSE@YUBIKEY_LIBS = 
+@TACYUBIKEY_TRUE@YUBIKEY_LIBS = -lyubikey
 tac_plus_LDFLAGS = -L$(top_srcdir)
-tac_plus_LDADD = $(WRAPLIBS) libtacacs.la
+tac_plus_LDADD = $(WRAPLIBS) $(YUBIKEY_LIBS) libtacacs.la
 lib_LTLIBRARIES = libtacacs.la
 libtacacs_la_SOURCES = fdes.c maxsess.c md4.c md5.c packet.c
 libtacacs_la_CFLAGS = @CFLAGS@ $(WARN) $(DBG) @PROFLAGS@

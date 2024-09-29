@@ -388,24 +388,29 @@ AC_ARG_WITH(yubikey,
     AC_MSG_RESULT(yes)
     AC_DEFINE(YUBIKEY_OTP)
     AC_SEARCH_LIBS([yubikey_parse], [yubikey],
-    [ ],
-    [AC_MSG_ERROR(Could not find libyubikey. You must first install libyubikey or provide a hint to the location of library and includes, as in --with-yubikey=/usr/local)])
+    [
+      AC_MSG_NOTICE([Found libyubikey])
+    ],
+    [
+      AC_MSG_ERROR([Could not find libyubikey. You must first install libyubikey or provide a hint to the location of library and includes, as in --with-yubikey=/usr/local])
+    ])
     ;;
   *)
     AC_MSG_RESULT(yes)
     AC_DEFINE(YUBIKEY_OTP)
     if test -d "$withval" ; then
-    LDFLAGS="$LDFLAGS -L$withval/lib"
-    CFLAGS="$CFLAGS -I$withval/include"
-    AC_SEARCH_LIBS([yubikey_parse], [yubikey],
-        [ ],
-        [AC_MSG_ERROR([Could not find libyubikey.])
-    ])
+      AC_MSG_NOTICE([Using custom YubiKey path: $withval])
+      LDFLAGS="$LDFLAGS -L$withval/lib"
+      CFLAGS="$CFLAGS -I$withval/include"
+      AC_SEARCH_LIBS([yubikey_parse], [yubikey],
+        [
+          AC_MSG_NOTICE([Found libyubikey in custom path])
+        ],
+        [
+          AC_MSG_ERROR([Could not find libyubikey in $withval. Please check the path and ensure libyubikey is installed.])
+        ])
     else
-    AC_SEARCH_LIBS([yubikey_parse], [$withval],
-        [ ],
-        [AC_MSG_ERROR([Could not find lib$withval.])
-    ])
+      AC_MSG_ERROR([Invalid path specified for --with-yubikey. It should be a directory.])
     fi
     ;;
   esac ],

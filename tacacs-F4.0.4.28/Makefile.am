@@ -21,8 +21,13 @@ endif
 if TACACECLNT
 tac_plus_SOURCES += aceclnt_fn.c
 endif
+if TACYUBIKEY
+YUBIKEY_LIBS = -lyubikey
+else
+YUBIKEY_LIBS =
+endif
 tac_plus_LDFLAGS = -L$(top_srcdir)
-tac_plus_LDADD = $(WRAPLIBS) libtacacs.la
+tac_plus_LDADD = $(WRAPLIBS) $(YUBIKEY_LIBS) libtacacs.la
 
 lib_LTLIBRARIES = libtacacs.la
 libtacacs_la_SOURCES = fdes.c maxsess.c md4.c md5.c packet.c
@@ -97,10 +102,3 @@ users_guide: Makefile $(srcdir)/users_guide.in
 	$(auto_edit) $(srcdir)/users_guide.in >users_guide.tmp; \
 	mv users_guide.tmp users_guide
 
-if TACYUBIKEY
-YUBIKEY_LIBS = -lyubikey
-else
-YUBIKEY_LIBS =
-endif
-
-tac_plus_LDADD = $(WRAPLIBS) $(LIBS) $(YUBIKEY_LIBS)

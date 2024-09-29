@@ -40,6 +40,9 @@
 
 struct private_data {
     char password[MAX_PASSWD_LEN + 1];
+#ifdef YUBIKEY_OTP
+    char yubikey_otp[44];
+#endif
     int state;
 };
 

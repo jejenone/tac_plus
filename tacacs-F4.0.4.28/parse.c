@@ -23,6 +23,9 @@
 /* Keywords of the configuration language */
 
 #include "tac_plus.h"
+#ifdef YUBIKEY_OTP
+#include <yubikey.h>
+#endif
 
 static void *wordtable[HASH_TAB_SIZE];	/* Table of keyword declarations */
 
@@ -128,7 +131,9 @@ parser_init(void)
     declare("writetimeout", S_writetimeout);
     declare("accepttimeout", S_accepttimeout);
     declare("logauthor", S_logauthor);
-
+#ifdef YUBIKEY_OTP
+    declare("yubikey", S_yubikey);
+#endif
 }
 
 /* Return a keyword code if a keyword is recognized. 0 otherwise */
@@ -286,5 +291,9 @@ codestring(int type)
   return("accepttimeout");
     case S_logauthor:
   return("logauthor");
+#ifdef YUBIKEY_OTP
+    case S_yubikey:
+  return("yubikey");
+#endif
     }
 }
